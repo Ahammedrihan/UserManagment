@@ -5,25 +5,24 @@ from django.contrib.auth import authenticate ,login ,logout
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-# Create your views here.
 
 
 @never_cache
 @login_required
 def index(request):
     
-    data = User.objects.all() # all objects from student table is passed to data
+    data = User.objects.all() 
     context ={"data":data}
     return render(request,"index.html",context)
 
 def insertData(request):
-    if request.method =="POST":# if we are doing a POST hhtp 
+    if request.method =="POST":
         first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name') # assinging the values to a variable as name from html page from input tag's name
+        last_name = request.POST.get('last_name')
         email= request.POST.get('email')
         password= request.POST.get('password')
 
-        query =User(username=first_name,last_name=last_name,email=email,password =password)# storing values from front-end to modeltable
+        query =User(username=first_name,last_name=last_name,email=email,password =password)
         query.save()
         messages.info(request," Data Inserted Successfully")
         return redirect("/")
@@ -31,9 +30,9 @@ def insertData(request):
 
 @never_cache
 def updateData(request,id):
-    if request.method =="POST": # if we are doing a POST hhtp 
+    if request.method =="POST": 
         first_name_update = request.POST['first_name']
-        last_name_update = request.POST['last_name'] # assinging the values to a variable as name from html page from input tag's name
+        last_name_update = request.POST['last_name']
         email_update= request.POST['email']
         password_update= request.POST['password']
        
@@ -46,31 +45,15 @@ def updateData(request,id):
         
         messages.warning(request," Data Updated Successfully")
         return redirect('index')
-    d = User.objects.get(id=id) # all objects from student table is passed to d variable
+    d = User.objects.get(id=id) 
     context ={"d":d}
     return render(request,"update.html",context)
 
 def deleteData(request,id):
-    d = User.objects.get(id=id) # all objects from student table is passed to data
+    d = User.objects.get(id=id)
     d.delete()
     messages.warning(request," Data Deleted Successfully")
     return redirect('index')
-
-"""def admin_login(request):
-    if request.user.is_authenticated:
-        return redirect('index')
-    if request.method == 'POST':
-        username = request.POST['Username']
-        password = request.POST['password']
-        user = authenticate(request,username=username,password=password)
-        if .is_superuser:
-           request.session['username'] = username
-           login(request,user)
-           return redirect('index')
-        else:
-            return redirect('admin_login')
-    return render(request,"adminlogin.html")"""
-
 
 
 @never_cache
@@ -90,7 +73,6 @@ def admin_login(request):
             else:
                 return redirect('admin_login')
         else:
-            # Handle the case when authentication fails
             return redirect('admin_login')
 
     return render(request, "adminlogin.html")
@@ -119,8 +101,7 @@ def registration(request):
         if password1 == password2:
            myuser = User.objects.create_user(username = first_name,last_name =last_name, email = email, password=password1)
            myuser.save()
-           print(myuser,'0000000000000')
-           #request.session['first_name'] = first_name
+          
            return redirect(login_page)
         messages.warning(request," Password mismatching")
         return redirect(registration)
@@ -152,7 +133,6 @@ def home_page(request):
         if 'first_name' in request.session:
             return render(request,"home.html")
     return redirect(login)
-#    return render(request,"home.html")
    
 
 @never_cache
@@ -161,9 +141,6 @@ def signout(request):
        request.session.flush() 
        logout(request)
     return redirect(login_page)
-""" if 'first_name' in request.session:
-        del request.session['first_name'] 
-        request.session.flush()"""
 
 
 
